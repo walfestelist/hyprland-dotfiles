@@ -1,0 +1,89 @@
+(defwindow panel
+    :monitor 0
+    :namespace "eww-panel"
+    :geometry (geometry
+        :x "0%"
+        :y "10px"
+        :width "3420px"
+        :height "40px"
+        :anchor "top center"
+    )
+    :stacking "fg"
+    :exclusive true
+    :windowtype "dock"
+    :wm-ignore false
+    (bar)
+)
+
+(defwidget bar []
+    (centerbox :orientation "h"
+        (box :halign "start" :space-evenly false
+            (workspaces)
+        )
+        (box :halign "center" :space-evenly false
+            (clock)
+        )
+        (box :halign "end" :space-evenly false
+            (volume)
+            (layout)
+        )
+    )
+)
+
+(defwidget clock []
+    (box 
+        :class "clock-box"
+        :orientation "h"
+        :halign "center"
+        :space-evenly false
+        (label :text time :class "clock-label")
+    )
+)
+
+(defpoll time :interval "1s"
+    "date '+%H:%M:%S'"
+)
+
+(defpoll curr_ws :interval "50ms"
+    "bash ~/.config/eww/scripts/get-workspaces.sh"
+)
+
+(defwidget workspaces []
+    (box :class "workspaces"
+         :orientation "h"
+         :space-evenly false
+         :halign "start"
+        (for i in "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+            (button :onclick "hyprctl dispatch workspace ${i}"
+                :class {curr_ws == i ? "ws-button active" : "ws-button"}
+                {i == 10 ? "0" : "${i}"}
+            )
+        )
+    )
+)
+
+(defpoll get_volume :interval "50ms"
+    "bash ~/.config/eww/scripts/get-volume.sh"
+)
+
+(defwidget volume []
+  (box :class "volume-container" :space-evenly false :spacing 10
+    (label :text {get_volume == 0 ? "󰝟" : "󰕾"})
+    (scale :class "volume"
+           :value get_volume
+           :orientation "h"
+           :min 0
+           :max 101
+           :onchange "amixer set Master {}%")))
+
+(defpoll get_layout :interval "50ms"
+  "hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap' | cut -c1-2 | tr '[:lower:]' '[:upper:]'")
+
+(defwidget layout []
+    (box :class "layout"
+        :orientation "h"
+        :space-evenly false
+        :halign "end"
+        (label :text get_layout)
+    )
+)
