@@ -1,0 +1,54 @@
+.panel {
+  border-radius: 12px;
+  background-color: rgba(26, 27, 38, 0.7);
+  border: 2px solid white;
+}
+
+.clock-label {
+  font-size: 18px;
+}
+
+.workspaces {
+  padding: 0 12px;
+  .ws-button {
+    all: unset;
+
+    padding: 0 12px;
+    min-height: 20px;
+    min-width: 10px;
+    font-size: 18px;
+
+    transition: all 0.3s ease;
+
+    &.active {
+      background-color: #313244;
+      border-radius: 10px;
+    }
+  }
+}
+
+.layout, .volume {
+  padding: 0 10px;
+}
+
+.layout {
+  margin-right: 12px;
+}
+
+.volume {
+  margin-right: 0px;
+  trough {
+    background-color: #444;
+    min-width: 80px;
+    min-height: 8px;
+    border-radius: 4px;
+  }
+  highlight {
+    background-color: #88c0d0;
+    border-radius: 4px;
+  }
+}
+
+.volume-container {
+  font-size: 20px;
+}
